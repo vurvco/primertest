@@ -1,23 +1,32 @@
+// R.A. Robertson "River of Souls Sequel" 2017-2018
+
 var souls = [];
 var windowRes, soulNum;
 var clockStart, clockEnd, lapsedTime;
-var v = 2;
+var v;
+var bground, onionSkin, commLines, soulStroke, soulFill;							// Color declarations.
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  background(0);
-  frameRate(30);
+  bground = color(255);																// Color definitions.
+  onionSkin = color(255, 30);
+  soulStroke = color(214, 25);
+  soulFill = color(214, 3);
+  background(bground);
+  v = 2;
   windowRes = windowWidth * windowHeight;
   soulNum = int(windowRes / 30000);
   soulNum = constrain(soulNum, 12, 33);
   for (var i = 0; i < soulNum; i++) {												// Initialize souls.
     souls[i] = new Soul();
   }
+  frameRate(30);  
 }
 
-function draw() {  
+function draw() {
+    
   noStroke();															  			// Onion skin layer.
-  fill(0, 18);
+  fill(onionSkin);
   rect(0, 0, width, height);
   
   for (var i = 0; i < souls.length; i++) {											// Invoke souls.
@@ -29,10 +38,11 @@ function draw() {
         var soulsDistance = dist(souls[i].x, souls[i].y, souls[j].x, souls[j].y);	// Total distance.
         var soulSpace = souls[i].d / 2 + souls[j].d / 2;							// Touch Radius.
         var communionDistance = 150;
-        var lineWeight = 50/soulsDistance;
-        
+                
         if (soulsDistance <= communionDistance) {		          					// Communion lines.    
-          stroke(lineWeight * 200, lineWeight, lineWeight, 6);
+          var lineWeight = 50/soulsDistance;
+          commLines = color(lineWeight * 80, lineWeight, lineWeight, 1);			// Communion lines color. 
+          stroke(commLines);
           line(souls[i].x, souls[i].y, souls[j].x, souls[j].y); 
         }
         
@@ -77,9 +87,9 @@ function Soul() {											 // Setup.
   this.yv = random(-v, v);
   
   this.show = function() {									 // Display.
-    stroke(100, 10, 200, 10);
+    stroke(soulStroke);
     strokeWeight(2);
-    fill(100, 10, 200, 5);  
+    fill(soulFill);  
     ellipse(this.x, this.y, this.d, this.d);    
   }
   
@@ -104,11 +114,14 @@ function windowResized() {									 // Adaptive/responsive design feature.
       souls[i] = new Soul();
     }
   
-  	//print(windowWidth + "	" + windowHeight);
-  	//print(width, + "	" + height);
-    //print(windowRes);
-    //print(soulNum);
-    //print(int(frameRate()));
+  	background(bground);
+}
+
+// ====================== UI ====================== //
+
+function keyPressed() {
+    var timeStamp = (new Date).getTime();
+	if (key == 'i' || key == 'I') saveCanvas('river_frame_' + timeStamp, 'png');       // DEV PURPOSES ONLY -- REMOVE FOR GOLIVE !!!
 }
 
 // ====================== End ====================== //
